@@ -63,7 +63,12 @@ vim.diagnostic.config({
 require("neotest").setup({
   -- your neotest config here
   adapters = {
-    require("neotest-go"),
+    require("neotest-go")({
+      experimental = {
+        test_table = true,
+      },
+      args = { "-count=1", "-timeout=60s" }
+    }),
   },
 })
 
@@ -80,8 +85,6 @@ if not dap_ok then
 end
 
 dapgo.setup()
-
-
 
 
 local status_ok, which_key = pcall(require, "which-key")
@@ -111,6 +114,12 @@ local mappings = {
     c = { "<cmd>GoCmt<Cr>", "Generate Comment" },
     t = { "<cmd>lua require('dap-go').debug_test()<cr>", "Debug Test" },
   },
+  d = {
+    name = "Debug",
+    m = { "<cmd>lua require('neotest').run.run()<cr>", "Test Method" },
+    M = { "<cmd>lua require('dap-go').debug_test()<cr>", "Test Method DAP" },
+    S = { "<cmd>lua require('neotest').summary.toggle()<cr>", "Test Summary" },
+  }
 }
 
 which_key.register(mappings, opts)
